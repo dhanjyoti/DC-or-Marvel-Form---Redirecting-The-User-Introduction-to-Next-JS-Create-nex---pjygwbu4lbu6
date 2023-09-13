@@ -6,8 +6,9 @@ import Summary from "./Summary";
 
 const App = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState('');
   const [age, setAge] = useState("");
+
 
   return (
     <div>
@@ -17,7 +18,7 @@ const App = () => {
           <h1>Step 1: Select Form Type and Enter Age</h1>
           <label>
             Enter your age:
-            <input value={age} />
+            <input type="number" value={age} onChange={({target})=>setAge(target.value)}/>
           </label>
           <br />
           <label>
@@ -35,22 +36,34 @@ const App = () => {
       )}
       {step === 2 && (
         <div>
-          <FormA age={age} />
+          <FormA age={age} onSubmit={(value)=>{
+            setFormData({show:value, step})
+            setStep(4)
+          }}/>
         </div>
       )}
       {step === 3 && (
         <div>
-          <FormB age={age} />
+          <FormB age={age} onSubmit={(value)=>{
+            setFormData({show:value, step})
+            setStep(4)
+          }}/>
         </div>
       )}
       {(step === 2 || step === 3) && age ? (
-        <button id="go-back" onClick={() => setStep(1)}>Go Back</button>
+        <button id="go-back" onClick={() => {
+          setStep(1)
+          setAge('')
+        }}>Go Back</button>
       ) : null}
 
       {step === 4 && (
         <div>
-          <Summary />
-          <button id="start-over">Start Over</button>
+          <Summary formData={{age:age, ...formData}}/>
+          <button id="start-over" onClick={()=>{
+            setStep(1)
+            setAge('')
+          }}>Start Over</button>
         </div>
       )}
     </div>
